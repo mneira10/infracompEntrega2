@@ -78,11 +78,9 @@ public class Main {
         if ((fromServer = lector.readLine()) != null) {
             System.out.println("Servidor: " + fromServer);
         }
-
-
     }
 
-    public static void etapa1(BufferedReader lector, PrintWriter escritor) throws Exception {
+    public static void etapa1(BufferedReader lector, PrintWriter escritor) throws Exception     {
         System.out.println("INICIO DE ETAPA1");
         escritor.println("HOLA");
 
