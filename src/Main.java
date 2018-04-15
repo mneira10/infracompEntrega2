@@ -64,14 +64,14 @@ public class Main {
             sim = (new BufferedReader(new InputStreamReader(System.in))).readLine();
             System.out.println("HMAC: (Escriba: MD5 ó SHA1 ó SHA256)");
             hmacPost = (new BufferedReader(new InputStreamReader(System.in))).readLine();
-            if((sim.equals("AES") || sim.equals("BLOWFISH")) && (hmacPost.equals("HMACMD5") ||
-                    hmacPost.equals("HMACSHA1") || hmacPost.equals("HMACSHA256") )){
+            if((sim.equals("AES") || sim.equals("Blowfish")) && (hmacPost.equals("MD5") ||
+                    hmacPost.equals("SHA1") || hmacPost.equals("SHA256") )){
                 valido = true;
             }else System.out.println("Algoritmos inválidos");
 
         }
 
-        System.out.println("Postfix: " + hmacPost.substring(4));
+//        System.out.println("Postfix: " + hmacPost.substring(4));
         //ejecucion del protocolo de comunicacion
         etapa1(lector, escritor);
         //mandar el certificado
