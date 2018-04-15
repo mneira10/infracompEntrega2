@@ -30,6 +30,9 @@ public class Main {
     static KeyPair llaves;
     static PublicKey serverKey;
     static SecretKey simmetricKey;
+    static String sim;
+    static String hmacPost;
+
 
     public static void main(String[] args) throws Exception {
 
@@ -38,7 +41,7 @@ public class Main {
         BufferedReader lector = null;
 
         String ip = "localhost";
-        int puerto = 8080;
+        int puerto = 8084;
 
         //concetarse a ip:ip en el puerto:puerto
         try {
@@ -54,6 +57,21 @@ public class Main {
             System.exit(1);
         }
 
+        boolean valido =false;
+        while(!valido) {
+            System.out.println("Especifique qué algoritmos de cifrado desea:");
+            System.out.println("Cifrado simétrico: (Escriba: AES ó Blowfish)");
+            sim = (new BufferedReader(new InputStreamReader(System.in))).readLine();
+            System.out.println("HMAC: (Escriba: MD5 ó SHA1 ó SHA256)");
+            hmacPost = (new BufferedReader(new InputStreamReader(System.in))).readLine();
+            if((sim.equals("AES") || sim.equals("BLOWFISH")) && (hmacPost.equals("HMACMD5") ||
+                    hmacPost.equals("HMACSHA1") || hmacPost.equals("HMACSHA256") )){
+                valido = true;
+            }else System.out.println("Algoritmos inválidos");
+
+        }
+
+        System.out.println("Postfix: " + hmacPost.substring(4));
         //ejecucion del protocolo de comunicacion
         etapa1(lector, escritor);
         //mandar el certificado
@@ -86,7 +104,7 @@ public class Main {
 
         imprimirServerConsola(lector);
 
-        escritor.println("ALGORITMOS:AES:RSA:HMACSHA256");
+        escritor.println("ALGORITMOS:" + sim.toUpperCase() + ":RSA:HMAC"  + hmacPost);
 
         imprimirServerConsola(lector);
 
@@ -154,7 +172,8 @@ public class Main {
         byte [] clearText = cipher.doFinal(etapa411);
 
 
-        simmetricKey = new SecretKeySpec( clearText, 0, clearText.length, "AES" );
+
+        simmetricKey = new SecretKeySpec( clearText, 0, clearText.length, sim );
 
         String coordenadas = "41 24.2028, 2 10.441";
 
@@ -165,7 +184,7 @@ public class Main {
 
 
 
-        Cipher cypher = Cipher.getInstance("AES");
+        Cipher cypher = Cipher.getInstance(sim);
         cypher.init(Cipher.ENCRYPT_MODE, simmetricKey);
 
         byte[] cipheredBytes    = cypher.doFinal(cT);
@@ -181,7 +200,7 @@ public class Main {
 
 
         //hash
-        Mac mac = Mac.getInstance( "HmacSHA256" );
+        Mac mac = Mac.getInstance( "Hmac" + hmacPost);
         mac.init( simmetricKey );
         byte[] semiFinal = mac.doFinal( cT );
 
